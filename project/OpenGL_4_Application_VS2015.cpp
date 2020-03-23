@@ -1,19 +1,11 @@
-//
-//  main.cpp
-//  OpenGL Shadows
-//
-//  Created by CGIS on 05/12/16.
-//  Copyright � 2016 CGIS. All rights reserved.
-//
-
 #define GLEW_STATIC
 
 #include "stdafx.h"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include "glm/glm.hpp"//core glm functionality
-#include "glm/gtc/matrix_transform.hpp"//glm extension for generating common transformation matrices
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "GLEW/glew.h"
@@ -206,8 +198,6 @@ bool cameraAnimation = false;
 
 bool collision(glm::vec3 camPos, gps::Model3D object)
 {
-	//printf("object pos %f %f %f -  %f %f %f\n", object.minX, object.maxX, object.minY, object.maxY, object.minZ, object.maxZ);
-	//printf("camera pos %f %f %f\n", camPos.x, camPos.y, camPos.z);
 	return(camPos.x >= object.minX && camPos.x <= object.maxX && camPos.y >= object.minY && camPos.y <= object.maxY && camPos.z >= object.minZ && camPos.z <= object.maxZ);
 }
 
@@ -272,12 +262,10 @@ void processMovement()
 	}
 
 	if (pressedKeys[GLFW_KEY_W]) {
-
 		if (!tryCollision(myCamera.getCameraPosition() + myCamera.getCameraDirection() * cameraSpeed))
 		{
 			myCamera.move(gps::MOVE_FORWARD, cameraSpeed);
 		}
-		//printf("%f %f %f\n", myCamera.getCameraPosition().x, myCamera.getCameraPosition().y, myCamera.getCameraPosition().z);
 	}
 
 	if (pressedKeys[GLFW_KEY_S]) {
@@ -285,7 +273,6 @@ void processMovement()
 		{
 			myCamera.move(gps::MOVE_BACKWARD, cameraSpeed);
 		}
-		//printf("%f %f %f\n", myCamera.getCameraPosition().x, myCamera.getCameraPosition().y, myCamera.getCameraPosition().z);
 	}
 
 	if (pressedKeys[GLFW_KEY_A]) {
@@ -293,15 +280,14 @@ void processMovement()
 		{
 			myCamera.move(gps::MOVE_LEFT, cameraSpeed);
 		}
-		//printf("%f %f %f\n", myCamera.getCameraPosition().x, myCamera.getCameraPosition().y, myCamera.getCameraPosition().z);
+		
 	}
 
 	if (pressedKeys[GLFW_KEY_D]) {
 		if (!tryCollision(myCamera.getCameraPosition() + myCamera.getCameraRightDirection() * cameraSpeed))
 		{ 
 			myCamera.move(gps::MOVE_RIGHT, cameraSpeed);
-		}
-		//printf("%f %f %f\n", myCamera.getCameraPosition().x, myCamera.getCameraPosition().y, myCamera.getCameraPosition().z);
+		}	
 	}
 
 	if (pressedKeys[GLFW_KEY_J]) {
@@ -459,7 +445,6 @@ glm::mat4 computeLightSpaceTrMatrix()
 {
 	const GLfloat near_plane = -10.0f, far_plane = 40.0f;
 	glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
-
 	glm::vec3 lightDirTr = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(lightAngle), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(lightDir, 1.0f));
 	glm::mat4 lightView = glm::lookAt(myCamera.getCameraTarget() + 1.0f * lightDirTr, myCamera.getCameraTarget(), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -479,7 +464,6 @@ void initModels()
 	swan = gps::Model3D("objects/scena4/swan2.obj", "objects/scena4/");
 	objects[1] = swan;
 	house = gps::Model3D("objects/scena4/house.obj", "objects/scena4/");
-	//skydom = gps::Model3D("objects/scena4/skydom1.obj", "objects/scena4/");
 	objects[2] = house;
 }
 
@@ -835,20 +819,7 @@ void renderScene()
 	model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	skydom.Draw(myCustomShader);
-
-	//draw a white cube around the light
-
-	/*lightShader.useShaderProgram();
-
-	glUniformMatrix4fv(glGetUniformLocation(lightShader.shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
-
-	model = glm::rotate(glm::mat4(1.0f), glm::radians(lightAngle), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::translate(model, 1.0f * lightDir);
-	model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
-	glUniformMatrix4fv(glGetUniformLocation(lightShader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
-	lightCube.Draw(lightShader);*/
-
+	
 	processMovement();
 
 }
